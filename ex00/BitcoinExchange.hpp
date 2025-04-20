@@ -17,6 +17,7 @@ class BitcoinExchange
         void parsing_line(std::string line,std::map<int, double> Map);
         void  parsing_Bitcoin(std::string str);
         void parsing_date();
+        BitcoinExchange();
 };
 int	is_intger(std::string str);
 std::string *split(std::string line, char target);
