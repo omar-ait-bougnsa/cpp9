@@ -3,6 +3,9 @@
 #define BitcoinExchange_hpp
 #include <iostream>
 #include <exception>
+#include <algorithm>
+#include <cstdlib>
+#include <fstream>
 #include <map>
 class BitcoinExchange
 {

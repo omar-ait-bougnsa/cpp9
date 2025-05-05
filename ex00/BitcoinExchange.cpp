@@ -1,5 +1,9 @@
 #include "BitcoinExchange.hpp"
 
+BitcoinExchange::BitcoinExchange()
+{
+
+}
 std::string *split(std::string line, char target)
 {
 	int i = 0;
@@ -101,9 +105,10 @@ void BitcoinExchange::parsing_line(std::string line,std::map<int, double> Map)
     {
     size_t pos = line.find ('|');
     std::string str = line.substr(0,pos);
+	size_t lenth = str.length() - 1;
     line.erase(0,pos + 1);
-    if (str[str.length() - 1] != ' ' || line[0] != ' ')
-	throw std::logic_error("Error: valide line must be 'Year-Month-Day | value' ");
+    if (str[lenth] != ' ' || line[0] != ' ')
+		throw std::logic_error("Error: valide line must be 'Year-Month-Day | value' ");
 	str.erase(str.size() - 1, 1);
     date = split(str,'-');
     line.erase(0,1);

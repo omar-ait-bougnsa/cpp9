@@ -6,12 +6,14 @@ T ft_parsing(char **av)
     int i = 1;
     char * check;
     int value;
+    std::string str;
     T v;
     while (av[i])
     {
+        str = av[i];
         value = std::strtold(av[i],&check);
-        if (check[0] != '\0' || value < 0)
-            throw (std::logic_error("error"));
+        if (check[0] != '\0' || value < 0 || str.find(".") != std::string::npos)
+            throw (std::logic_error("Error"));
         else
             v.push_back (value);
         i++;
@@ -32,28 +34,27 @@ int main(int ac, char **av)
 {
     std::vector<int> v;
     std::deque<int> d;
-    std::vector <std::pair<int, int> > v1;
     if (ac == 1)
     {
         std::cout << "error : at least two argument\n";
         return 0;
     }
     try
-    {
+    {   
         v = ft_parsing<std::vector<int> >(av);
         std::cout <<"Before: ";
         ft_print(v);
-        time_t Time = time(NULL);
+        clock_t start = clock();
         v = sort_vector(v);
-        long n = Time - time(NULL);
+        double Time = static_cast<double>(std::clock() - start) / CLOCKS_PER_SEC * 1000;
         std::cout <<"after: ";
         ft_print(v);
-        std::cout <<n <<std::endl;
+        std::cout << std::fixed << "Time to process a range of " << v.size() <<" elements with std::vector "<<Time <<std::endl;
         d = ft_parsing<std::deque<int> >(av);
-        Time = time(NULL);
+        start = clock();
         d = sort_deque(d);
-        n = Time - time(NULL);
-        std::cout <<n<< std::fixed <<std::endl;
+        double Time1 = static_cast<double>(std::clock() - start) / CLOCKS_PER_SEC * 1000;
+        std::cout <<"Time to process a range of " << v.size() <<" elements with std::deque  "<<Time1<< std::fixed <<std::endl;
     }
     catch(const std::exception& e)
     {

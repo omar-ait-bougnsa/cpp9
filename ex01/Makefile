@@ -1,8 +1,8 @@
-name = PmergeMe
+name = RPN
 CC = c++
 flag = -Wall -Wextra -Werror -std=c++98
 
-SRC = PmergeMe.cpp main.cpp 
+SRC = main.cpp 
 
 OBJ = $(SRC:.cpp=.o)
 

@@ -49,11 +49,11 @@ std::vector<int> sort_vector(std::vector<int> value)
     size_t inserted = 0;
     for (size_t k = 0; k < jacob.size(); ++k)
     {
-        int start = 0;
+        size_t start = 0;
         if (k != 0)
             start = jacob[k - 1];
         int end = jacob[k];
-        for (int i = end; i > start; --i)
+        for (size_t i = end; i > start; --i)
         {
             if (i - 1 < pend.size())
             {
@@ -120,11 +120,11 @@ std::deque<int> sort_deque(std::deque<int> value)
     size_t inserted = 0;
     for (size_t k = 0; k < jacob.size(); ++k)
     {
-        int start = 0;
+        size_t start = 0;
         if (k != 0)
             start = jacob[k - 1];
         int end = jacob[k];
-        for (int i = end; i > start; --i)
+        for (size_t i = end; i > start; --i)
         {
             if (i - 1 < pend.size())
             {
