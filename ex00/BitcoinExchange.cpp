@@ -51,12 +51,6 @@ int	lenth(std::string *str)
 void BitcoinExchange::parsing_date()
 {
     int maxDay;
-    // int i = 0;
-    // while (date[i].empty())
-	// {
-	// 	std::cout <<"date = " <<  date[i].empty() <<std::endl;
-	// 	i++;
-	// }
     if (lenth(date) != 3)
 		throw std::logic_error("Error: valide date must be 'Year-Month-Day' ");
     if (!is_intger(date[0]) || !is_intger(date[1]) || !is_intger(date[2]))
@@ -70,7 +64,7 @@ void BitcoinExchange::parsing_date()
     day = atoi(date[2].c_str());
 
     if (month > 12)
-		throw std::logic_error("Error: must mounth (1,12)");
+		throw std::logic_error("Error: mounth must (1,12)");
 	if (month == 2)
 	{
 		maxDay = 28;
@@ -109,9 +103,9 @@ void BitcoinExchange::parsing_line(std::string line,std::map<int, double> Map)
     line.erase(0,pos + 1);
     if (str[lenth] != ' ' || line[0] != ' ')
 		throw std::logic_error("Error: valide line must be 'Year-Month-Day | value' ");
+	line.erase(0,1);
 	str.erase(str.size() - 1, 1);
     date = split(str,'-');
-    line.erase(0,1);
     parsing_date();
     parsing_Bitcoin(line);
     std::map<int, double>::iterator it = Map.begin();

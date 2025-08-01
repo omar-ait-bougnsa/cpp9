@@ -1,5 +1,4 @@
 
-// #include <string>
 #include "BitcoinExchange.hpp"
 
 void	add_line_in_map(std::string line, std::map<int, double> *Map)
@@ -76,6 +75,7 @@ int	main(int ac, char **av)
 	if (!file.is_open())
 	{
 		std::cout << "can't open file\n";
+		return 0;
 	}
 	read_file(file);
 }

@@ -2,53 +2,62 @@
 #include <stack>
 #include <exception>
 #include <vector>
-class Solution 
+#include <sstream>
+#include <cstdlib>
+#include <string>
+
+int  solve(std::string str)
 {
-public:
-    int evalRPN(std::vector<std::string>& tokens)
+    std::stringstream ss(str);
+    std::string word;
+    int number;
+    std::stack <int> Stack;
+    char *end;
+    while (ss >> word)
     {
-        std::stack<int> Stack;
-        char *pos;
-        std::vector<std::string>::iterator it = tokens.begin();
-        while (it != tokens.end())
+        if (word == "*" || word == "-" || word == "+" || word == "/")
         {
-            std::string str = *it;
-            if (str == "*" || str == "-" || str == "+" || str == "/")
-            {
-                int b = Stack.top();
-                Stack.pop ();
-                int a = Stack.top();
-                Stack.pop ();
-                if (str == "+")
-                    Stack.push(a + b);
-                else if (str == "/")
-                    Stack.push(a / b);
-                else if (str == "*")
-                    Stack.push(a * b);
-                else if (str == "-")
-                    Stack.push(a - b);
-            }
-            else
-                Stack.push(std::strtold(str.c_str(),&pos));
-            if (pos != '\0')
-                throw std::logic_error ("error : must just entiger");
-            it++;
+            if (Stack.size() < 2)
+                throw std::logic_error("Error: too few values before operator");
+            int b = Stack.top();
+            Stack.pop ();
+            int a = Stack.top();
+            Stack.pop ();
+            if (word == "+")
+                Stack.push(a + b);
+            else if (word == "/")
+                Stack.push(a / b);
+            else if (word == "*")
+                Stack.push(a * b);
+            else if (word == "-")
+                Stack.push(a - b);
         }
-        if (Stack.size() != 1)
-        throw std::logic_error ("error logic");
-        return (Stack.top());
+        else
+        {
+            number = std::strtol(word.c_str(), &end, 10);
+            if (end[0] != '\0')
+                throw std::logic_error ("Error : must just entiger");
+            if (number >= 10)
+                throw std::logic_error ("input numbers must less then 10");
+            Stack.push(number);
+        }
     }
-};
-int main()
+    if (Stack.size() != 1)
+        throw std::logic_error ("Error logic");
+    return Stack.top();
+    
+}
+int main(int ac, char **av)
 {
-    std::vector<std::string> b;
-    Solution obj;
-    b.push_back("10");
-    b.push_back("6");
-    b.push_back("-");
+    if (ac != 2)
+    {
+        std::cerr << "just tow args\n";
+        return 0;
+       // std::cerr << "arguments must less than 10" <<std::endl;
+    }
     try
     {
-        std::cout << obj.evalRPN(b);
+        std::cout << solve(av[1]);
     }
     catch(const std::exception& e)
     {
