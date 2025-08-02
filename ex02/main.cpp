@@ -12,7 +12,7 @@ T ft_parsing(char **av)
     {
         str = av[i];
         value = std::strtold(av[i],&check);
-        if (check[0] != '\0' || value < 0 || str.find(".") != std::string::npos)
+        if (check[0] != '\0' || value < 0 )
             throw (std::logic_error("Error"));
         else
             v.push_back (value);
@@ -20,6 +20,7 @@ T ft_parsing(char **av)
     }
     return v;
 }
+
 void ft_print(std::vector<int> v)
 {
     std::vector<int>::iterator it = v.begin();
@@ -34,7 +35,7 @@ int main(int ac, char **av)
 {
     std::vector<int> v;
     std::deque<int> d;
-    if (ac == 1)
+    if (ac < 2)
     {
         std::cout << "error : at least two argument\n";
         return 0;

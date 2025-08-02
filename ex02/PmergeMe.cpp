@@ -26,6 +26,7 @@ std::vector<int> sort_vector(std::vector<int> value)
         has_odd = 1;
         odd_element = value.back();
     }
+
     for (size_t i = 0; i < value.size() - has_odd; i += 2)
     {
         if (value[i] < value[i + 1])
