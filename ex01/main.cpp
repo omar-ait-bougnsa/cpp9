@@ -36,7 +36,7 @@ int  solve(std::string str)
         {
             number = std::strtol(word.c_str(), &end, 10);
             if (end[0] != '\0')
-                throw std::logic_error ("Error : must just entiger");
+                throw std::logic_error ("Error : must just entiger and */-+");
             if (number >= 10)
                 throw std::logic_error ("input numbers must less then 10");
             Stack.push(number);
@@ -47,13 +47,13 @@ int  solve(std::string str)
     return Stack.top();
     
 }
+
 int main(int ac, char **av)
 {
     if (ac != 2)
     {
         std::cerr << "just tow args\n";
         return 0;
-       // std::cerr << "arguments must less than 10" <<std::endl;
     }
     try
     {

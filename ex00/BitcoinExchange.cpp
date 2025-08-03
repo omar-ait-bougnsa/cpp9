@@ -4,6 +4,7 @@ BitcoinExchange::BitcoinExchange()
 {
  
 }
+
 std::string *split(std::string line, char target)
 {
 	int i = 0;
@@ -37,6 +38,7 @@ std::string *split(std::string line, char target)
 	}
     return str;
 }
+
 int	lenth(std::string *str)
 {
 	int	i;
@@ -48,21 +50,19 @@ int	lenth(std::string *str)
 	}
 	return (i);
 }
+
 void BitcoinExchange::parsing_date()
 {
     int maxDay;
     if (lenth(date) != 3)
-		throw std::logic_error("Error: valide date must be 'Year-Month-Day' ");
+		throw std::logic_error("Error: date must be 'Year-Month-Day' ");
     if (!is_intger(date[0]) || !is_intger(date[1]) || !is_intger(date[2]))
-		throw std::logic_error("Error: valide line must be 'Year-Month-Day | value' ");
-	if (date[1].size() != 2 || date[2].size() != 2)
-		throw std::logic_error("Error: month and day must two character");
+		throw std::logic_error("Error: date must be 'Year-Month-Day'");
     if (date[1].size() != 2 || date[2].size() != 2)
-		throw std::logic_error("Error: month and day must two character");
+		throw std::logic_error("Error: Month and day must be two digite (02,12)");
     year = atoi(date[0].c_str());
     month = atoi(date[1].c_str());
     day = atoi(date[2].c_str());
-
     if (month > 12)
 		throw std::logic_error("Error: mounth must (1,12)");
 	if (month == 2)
@@ -78,9 +78,10 @@ void BitcoinExchange::parsing_date()
 	else
 		maxDay = 31;
 	if (day > maxDay)
-		throw std::logic_error("Error: this day is not in this month.");
-    date_number = year * 10000 + month * 100 + day;
+		throw std::logic_error("Error: Invalid day, this month does not have that many days");
+    date_input = year * 10000 + month * 100 + day;
 }
+
 void BitcoinExchange::validate_bitcoin_value(std::string str)
 {
     char *pos;
@@ -88,45 +89,53 @@ void BitcoinExchange::validate_bitcoin_value(std::string str)
     if (pos[0] != '\0')
         throw std::logic_error("Error: Bitcoin must integer");
     if(Bitcoin < 0)
-        throw std::logic_error("Error: not a positive number.");
+        throw std::logic_error("Error: Bitcoin must a positive number.");
     if (Bitcoin > 1000)
-        throw std::logic_error("Error: too large a number.");
+        throw std::logic_error("Error: Bitcoin too large a number.");
 }
 
 void BitcoinExchange::parsing_line(std::string line,std::map<int, double> Map)
 {
+	std::string dateStr;
+	std::string BitcoinStr;
     try
     {
-    size_t pos = line.find ('|');
-    std::string str = line.substr(0,pos);
-	size_t lenth = str.length() - 1;
-    line.erase(0,pos + 1);
-    if (str[lenth] != ' ' || line[0] != ' ')
-		throw std::logic_error("Error: valide line must be 'Year-Month-Day | value' ");
-	line.erase(0,1);
-	str.erase(str.size() - 1, 1);
-    date = split(str,'-');
-    parsing_date();
-    validate_bitcoin_value(line);
-    std::map<int, double>::iterator it = Map.begin();
-	while (it != Map.end())
-	{
-		if (it->first == date_number)
+    	size_t pos = line.find ('|');
+		if (pos == std::string::npos)
+			throw std::logic_error ("bad input => "+ line);
+    	dateStr = line.substr(0,pos);
+    	BitcoinStr = line.substr(pos +1);
+		size_t lenth = dateStr.length() - 1;
+    	if (dateStr[lenth] != ' ' || BitcoinStr[0] != ' ')
+			throw std::logic_error("Error: valide line must be 'Year-Month-Day | value' ");
+		BitcoinStr.erase(0,1);
+		dateStr.erase(dateStr.size() - 1, 1);
+    	date = split(dateStr,'-');
+    	parsing_date();
+    	validate_bitcoin_value(BitcoinStr);
+    	std::map<int, double>::iterator it = Map.begin();
+		while (it != Map.end())
 		{
-			std::cout << str << " => " << line << " = " << it->second * Bitcoin << std::endl;
-			break ;
+			if (it->first == date_input)
+			{
+				std::cout << dateStr << " => " << BitcoinStr << " = " << it->second * Bitcoin << std::endl;
+				return;
+			}
+			else if (it == Map.begin() && it->first > date_input)
+			{
+				std::cout << "Error: "+ dateStr +" => doesn't have Bitcoin" << std::endl;
+				return;
+			}
+			else if (it->first > date_input)
+			{
+				it--;
+				std::cout << dateStr << " => " << BitcoinStr << " = " << it->second * Bitcoin << std::endl;
+				return;
+			}
+			it++;
 		}
-		else if (it->first > date_number)
-		{
-			it--;
-			if (it == Map.begin())
-				std::cout << "Error: this date doesn't have Bitcoin" << std::endl;
-			else
-				std::cout << str << " => " << line << " = " << it->second * Bitcoin << std::endl;
-			break ;
-		}
-				it++;
-	}
+		it--;
+		std::cout << dateStr << " => " << BitcoinStr << " = " << it->second * Bitcoin << std::endl;
     }
     catch(const std::exception& e)
     {
