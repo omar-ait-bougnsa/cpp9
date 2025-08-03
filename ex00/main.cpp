@@ -1,31 +1,30 @@
 
 #include "BitcoinExchange.hpp"
 
-void	add_line_in_map(std::string line, std::map<int, double> *Map)
+void	parse_data_line(std::string line, std::map<int, double> &Map)
 {
-	size_t	pos;
-	int		value;
+	size_t		pos;
+	int 		date;
+	double		value;
 
 	pos = line.find(',');
 	std::string str = line.substr(0, pos);
 	std::string *newstr = split(str, '-');
-	value = atoi(newstr[0].c_str()) * 10000 + atoi(newstr[1].c_str()) * 100 + atoi(newstr[2].c_str());
-	std::pair<int, double> Pair = std::pair<int, double>(value,std::atof(line.substr(pos + 1).c_str()));
-	Map->insert(Pair);
+	date = atoi(newstr[0].c_str()) * 10000 + atoi(newstr[1].c_str()) * 100 + atoi(newstr[2].c_str());
+	value = std::atof(line.substr(pos + 1).c_str());
+	Map[date] = value;
 	delete[] newstr;
 }
 
 int	is_intger(std::string str)
 {
 	int			i;
-	char const	*s;
+	char const	*s; 
 
 	i = 0;
 	s = str.c_str();
 	if (str.empty())
-	{
 		return (0);
-	}
 	while (s[i])
 	{
 		if (!isdigit(str[i]))
@@ -37,7 +36,7 @@ int	is_intger(std::string str)
 	return (1);
 }
 
-void	read_file(std::ifstream &file)
+void	processData(std::ifstream &file)
 {
 	std::ifstream data("data.csv");
 	std::string line;
@@ -51,7 +50,7 @@ void	read_file(std::ifstream &file)
 	std::getline(data, line);
 	while (std::getline(data, line))
 	{
-		add_line_in_map(line, &Map);
+		parse_data_line(line, Map);
 	}
 	std::getline(file, line);
 	if (line != "date | value")
@@ -77,5 +76,5 @@ int	main(int ac, char **av)
 		std::cout << "can't open file\n";
 		return 0;
 	}
-	read_file(file);
+	processData(file);
 }

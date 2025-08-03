@@ -18,7 +18,7 @@ class BitcoinExchange
         std::string *date;
     public :
         void parsing_line(std::string line,std::map<int, double> Map);
-        void  parsing_Bitcoin(std::string str);
+        void  validate_bitcoin_value(std::string str);
         void parsing_date();
         BitcoinExchange();
 };

@@ -2,7 +2,7 @@
 
 BitcoinExchange::BitcoinExchange()
 {
-
+ 
 }
 std::string *split(std::string line, char target)
 {
@@ -81,7 +81,7 @@ void BitcoinExchange::parsing_date()
 		throw std::logic_error("Error: this day is not in this month.");
     date_number = year * 10000 + month * 100 + day;
 }
-void BitcoinExchange::parsing_Bitcoin(std::string str)
+void BitcoinExchange::validate_bitcoin_value(std::string str)
 {
     char *pos;
     Bitcoin = std::strtold(str.c_str(), &pos);
@@ -107,7 +107,7 @@ void BitcoinExchange::parsing_line(std::string line,std::map<int, double> Map)
 	str.erase(str.size() - 1, 1);
     date = split(str,'-');
     parsing_date();
-    parsing_Bitcoin(line);
+    validate_bitcoin_value(line);
     std::map<int, double>::iterator it = Map.begin();
 	while (it != Map.end())
 	{
