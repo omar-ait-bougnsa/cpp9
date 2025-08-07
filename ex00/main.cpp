@@ -21,7 +21,15 @@ int	BitcoinExchange::parse_data_line(std::string line)
 		std::cout << "Error: bad dataDB => " << line << std::endl;
 		return 0;
 	}
-	parseDate(dateStr);
+	try
+	{
+		parseDate(dateStr);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+		return 0;
+	}
 	value = std::strtod(value_str.c_str(), NULL);
 	Map[dateStr] = value;
 	return 1;
