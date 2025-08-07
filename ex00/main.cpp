@@ -1,22 +1,38 @@
 
 #include "BitcoinExchange.hpp"
 
-void	BitcoinExchange::parse_data_line(std::string line, std::map<int, double> &Map)
+int	BitcoinExchange::parse_data_line(std::string line)
 {
 	size_t		pos;
-	int 		date;
 	double		value;
+	std::string str;
+	int 	     i = 0;
 	pos = line.find(',');
-	std::string str = line.substr(0, pos);
+	if (pos == std::string::npos)
+	{
+		std::cout << "Error: bad dataDB => " << line << std::endl;
+		return 0;
+	}
+	std::string dateStr = line.substr(0, pos);
 	std::string value_str = line.substr(pos + 1).c_str();
-	std::string *newstr = split(str, '-');
-	year 	= atoi(newstr[0].c_str());
-	month 	= atoi(newstr[1].c_str());
-	day		= atoi(newstr[2].c_str());
-	date = year * 10000 + month * 100 + day;
-	value = std::strtold(value_str.c_str(),NULL);
-	Map[date] = value;
-	delete[] newstr;
+	std::stringstream ss(dateStr);
+	if (dateStr.empty() || value_str.empty())
+	{
+		std::cout << "Error: bad dataDB => " << line << std::endl;
+		return 0;
+	}
+	while (std::getline(ss, str, '-'))
+	{
+		if (str.empty() || !is_intger(str) || i > 2)
+		{
+			std::cout << "Error: bad dataDB => " << line << std::endl;
+			return 0;
+		}
+		i++;
+	}
+	value = std::strtod(value_str.c_str(), NULL);
+	Map[dateStr] = value;
+	return 1;
 }
 
 int	is_intger(std::string str)
@@ -38,22 +54,31 @@ int	is_intger(std::string str)
 	}
 	return (1);
 }
-
-void  BitcoinExchange::processData(std::ifstream &file)
+int  BitcoinExchange::parsing_date(std::string datafile)
 {
-	std::ifstream 	fileData("data.csv");
 	std::string 	line;
-	std::map<int, double> Map;
+	std::ifstream 	fileData(datafile.c_str());
 	if (!fileData.is_open())
 	{
 		std::cout << "can't open file data.csv" << std::endl;
-		return ;
+		return 0;
 	}
 	std::getline(fileData, line);
 	while (std::getline(fileData, line))
 	{
-		parse_data_line(line, Map);
+		if (parse_data_line(line) == 0)
+			return 0;
 	}
+	return (1);
+}
+
+void  BitcoinExchange::processData(std::ifstream &file)
+{
+	std::string 	line;
+
+	if (parsing_date("data.csv") == 0)
+		return ;
+	
 	std::getline(file, line);
 	if (line != "date | value")
 	{
@@ -62,7 +87,7 @@ void  BitcoinExchange::processData(std::ifstream &file)
 	}
 	while (std::getline(file, line))
 	{
-		parsing_line(line,Map);
+		parsing_line(line);
 	}
 }
 int	main(int ac, char **av)

@@ -13,7 +13,7 @@ T ft_parsing(char **av)
         str = av[i];
         value = std::strtold(av[i],&check);
         if (check[0] != '\0' || value < 0 )
-            throw (std::logic_error("Error"));
+            throw (std::logic_error("Error : must integer and positive"));
         else
             v.push_back (value);
         i++;
@@ -33,8 +33,8 @@ void ft_print(std::vector<int> v)
 }
 int main(int ac, char **av)
 {
-    std::vector<int> v;
-    std::deque<int> d;
+    std::vector<int>    v;
+    std::deque<int>     d;
     if (ac < 2)
     {
         std::cout << "error : at least two argument\n";

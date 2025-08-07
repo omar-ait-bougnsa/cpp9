@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <fstream>
+#include <sstream>
 #include <map>
 class BitcoinExchange
 {
@@ -15,13 +16,15 @@ class BitcoinExchange
         int year;
         double Bitcoin;
         int date_input;
-        std::string *date;
+        // std::string *date;
+        std::map<std::string, double> Map;
     public :
-        void    parsing_line(std::string line,std::map<int, double> Map);
+        void    parsing_line(std::string line);
         void    validate_bitcoin_value(std::string str);
         void	processData(std::ifstream &file);
-        void    parse_data_line(std::string line, std::map<int, double> &Map);
-        void    parsing_date();
+        int    parse_data_line(std::string line);
+        std::string    parseInputData(std::string dataStr);
+        int    parsing_date(std::string datafile);
         BitcoinExchange();
 };
 int	is_intger(std::string str);
