@@ -36,31 +36,29 @@ std::vector<int> sort_vector(std::vector<int> value)
     }
 
     std::vector<int> larger;
-    std::vector<int> pend;
+    std::vector<int> smaller;
     std::vector<std::pair<int, int> >::iterator it = pairs.begin();
     while (it != pairs.end())
     {
         larger.push_back(it->first);
-        pend.push_back(it->second);
+        smaller.push_back(it->second);
         it++;
     }
     larger = sort_vector(larger);
-    std::vector<int> jacob = Jacobsthal_sequence(pend.size());
+    std::vector<int> jacob = Jacobsthal_sequence(smaller.size());
 
-    size_t inserted = 0;
     for (size_t k = 0; k < jacob.size(); ++k)
     {
-        size_t start = 0;
+        int start = 0;
         if (k != 0)
             start = jacob[k - 1];
         int end = jacob[k];
-        for (size_t i = end; i > start; --i)
+        for (int i = end - 1; i >= start; --i)
         {
-            if (i - 1 < pend.size())
+            if (i < static_cast<int>(smaller.size()))
             {
-                std::vector<int>::iterator pos =std::lower_bound(larger.begin(), larger.end(), pend[i - 1]);
-                larger.insert(pos, pend[i - 1]);
-                inserted++;
+                std::vector<int>::iterator pos =std::lower_bound(larger.begin(), larger.end(), smaller[i]);
+                larger.insert(pos, smaller[i]);
             }
         }
     }
@@ -107,31 +105,29 @@ std::deque<int> sort_deque(std::deque<int> value)
     }
 
     std::deque<int> larger;
-    std::deque<int> pend;
+    std::deque<int> smaller;
     std::deque<std::pair<int, int> >::iterator it = pairs.begin();
     while (it != pairs.end())
     {
         larger.push_back(it->first);
-        pend.push_back(it->second);
+        smaller.push_back(it->second);
         it++;
     }
     larger = sort_deque(larger);
-    std::deque<int> jacob = Jacobsthal_sequence1(pend.size());
+    std::deque<int> jacob = Jacobsthal_sequence1(smaller.size());
 
-    size_t inserted = 0;
     for (size_t k = 0; k < jacob.size(); ++k)
     {
-        size_t start = 0;
+        int start = 0;
         if (k != 0)
             start = jacob[k - 1];
         int end = jacob[k];
-        for (size_t i = end; i > start; --i)
+        for (int i  = end - 1; i >= start; --i)
         {
-            if (i - 1 < pend.size())
+            if (i < static_cast<int>(smaller.size()))
             {
-                std::deque<int>::iterator pos =std::lower_bound(larger.begin(), larger.end(), pend[i - 1]);
-                larger.insert(pos, pend[i - 1]);
-                inserted++;
+                std::deque<int>::iterator pos =std::lower_bound(larger.begin(), larger.end(), smaller[i]);
+                larger.insert(pos, smaller[i]);
             }
         }
     }

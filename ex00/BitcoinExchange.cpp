@@ -5,58 +5,36 @@ BitcoinExchange::BitcoinExchange()
  
 }
 
-// std::string *split(std::string line, char target)
-// {
-// 	int i = 0;
-// 	size_t pos = 0;
-//     int less = 0;
-// 	std::string *str = new std::string[5];
-// 	while (i < 5)
-// 	{
-// 		pos = line.find (target);
-// 		if (pos == std::string::npos)
-//         {
-//             str[i] = line.substr (0,line.length());
-// 			break;
-//         }
-//         if (line[pos] == '-')
-//             less++;
-// 		str[i] = line.substr (0,pos);
-// 		line.erase(0,pos + 1);
-// 		i++;
-// 	}
-//     if (less != 2)
-//     {
-//         delete[] str;
-//         throw std::logic_error("Error: valide line must be 'Year-Month-Day | value'");
-//     }
-// 	i = 0;
-//     while (str[i].empty())
-// 	{
-// 		std::cout <<"date = " <<  str[i].empty() <<std::endl;
-// 		i++;
-// 	}
-//     return str;
-// }
+BitcoinExchange::BitcoinExchange(const BitcoinExchange &other)
+{
+	day = other.day;
+    month = other.month;
+    year = other.year;
+    Bitcoin = other.Bitcoin;
+    date_input = other.date_input;
+    Map  =  other.Map;
+}
 
-// int	lenth(std::string *str)
-// {
-// 	int	i;
+BitcoinExchange BitcoinExchange::operator=(const BitcoinExchange &other)
+{
+	day = other.day;
+    month = other.month;
+    year = other.year;
+    Bitcoin = other.Bitcoin;
+    date_input = other.date_input;
+    Map =  other.Map;
+	return *this;
+}
+BitcoinExchange::~BitcoinExchange()
+{
 
-// 	i = 0;
-// 	while (!str[i].empty())
-// 	{
-// 		i++;
-// 	}
-// 	return (i);
-// }
+}
 
-std::string BitcoinExchange::parseInputData(std::string dataStr)
+std::string BitcoinExchange::parseDate(std::string dataStr)
 {
     int maxDay;
 	int i = 0;
-    // if (lenth(date) != 3)
-	// 	throw std::logic_error("Error: date must be 'Year-Month-Day' ");
+    
 	std::stringstream ss(dataStr);
 
 	while (std::getline(ss, dataStr, '-'))
@@ -64,7 +42,11 @@ std::string BitcoinExchange::parseInputData(std::string dataStr)
 		if (dataStr.empty() || !is_intger(dataStr))
 			throw std::logic_error("Error: date must be 'Year-Month-Day' and must be integer");
 		if (i == 0)
+		{
+			if (dataStr.size() != 4)
+				throw std::logic_error ("Error: must just betwen (1000 to 9999) in year");
 			year = atoi(dataStr.c_str());
+		}
 		else if (i == 1)
 		{
 			if (dataStr.size() != 2)
@@ -77,11 +59,10 @@ std::string BitcoinExchange::parseInputData(std::string dataStr)
 				throw std::logic_error("Error: Day must be two digits (01, 31)");
 			day = atoi(dataStr.c_str());
 		}
-		else
-			throw std::logic_error("Error: date must be 'Year-Month-Day'");
 		i++;
 	}
- 
+	if (i != 3)
+		throw std::logic_error("Error: date must be 'Year-Month-Day'");
     if (month > 12)
 		throw std::logic_error("Error: mounth must (1,12)");
 	if (month == 2)
@@ -135,11 +116,13 @@ void BitcoinExchange::parsing_line(std::string line)
 		 	throw std::logic_error ("bad input => "+ line);
     	dateStr = line.substr(0,pos);
     	BitcoinStr = line.substr(pos +1);
+		if (dateStr[dateStr.size() - 1] != ' ' || BitcoinStr[0] != ' ')
+			throw std::logic_error ("Error: bad input => " + line);
     	removSpace(dateStr);
 		removSpace(BitcoinStr);
 		if (dateStr.empty() || BitcoinStr.empty())
 			throw std::logic_error("Error: bad input => " + line + " must 'Year-Month-Day | value'");
-		parseInputData(dateStr);
+		parseDate(dateStr);
     	validate_bitcoin_value(BitcoinStr);
 		std::map<std::string, double>::iterator it = Map.lower_bound(dateStr);
 		if (it == Map.begin() && it->first > dateStr)

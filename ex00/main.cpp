@@ -6,7 +6,6 @@ int	BitcoinExchange::parse_data_line(std::string line)
 	size_t		pos;
 	double		value;
 	std::string str;
-	int 	     i = 0;
 	pos = line.find(',');
 	if (pos == std::string::npos)
 	{
@@ -15,21 +14,14 @@ int	BitcoinExchange::parse_data_line(std::string line)
 	}
 	std::string dateStr = line.substr(0, pos);
 	std::string value_str = line.substr(pos + 1).c_str();
+	
 	std::stringstream ss(dateStr);
 	if (dateStr.empty() || value_str.empty())
 	{
 		std::cout << "Error: bad dataDB => " << line << std::endl;
 		return 0;
 	}
-	while (std::getline(ss, str, '-'))
-	{
-		if (str.empty() || !is_intger(str) || i > 2)
-		{
-			std::cout << "Error: bad dataDB => " << line << std::endl;
-			return 0;
-		}
-		i++;
-	}
+	parseDate(dateStr);
 	value = std::strtod(value_str.c_str(), NULL);
 	Map[dateStr] = value;
 	return 1;
@@ -54,6 +46,7 @@ int	is_intger(std::string str)
 	}
 	return (1);
 }
+
 int  BitcoinExchange::parsing_date(std::string datafile)
 {
 	std::string 	line;
